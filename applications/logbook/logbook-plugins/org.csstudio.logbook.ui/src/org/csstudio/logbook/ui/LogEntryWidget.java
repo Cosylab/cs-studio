@@ -1125,6 +1125,8 @@ public class LogEntryWidget extends Composite {
             // Show the dialog again
             shell.setVisible(true);
         }
+        
+        shell.forceActive();
 
         // Write to file
         try {
