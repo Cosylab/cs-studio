@@ -2,6 +2,11 @@ package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -122,8 +127,22 @@ public class LinkTable extends BeanComposite {
     }
 
     public void linkAction(Attachment attachment) {
-    String url = attachment.getFileName();
-    Program.launch(url);
+    try {
+        File file = new File(System.getProperty("java.io.tmpdir"),attachment.getFileName());
+        file.deleteOnExit();
+        InputStream is = attachment.getInputStream();
+        OutputStream os = new FileOutputStream(file);
+        byte[] b = new byte[1024];
+        int len = 0;
+        while ((len = is.read(b)) != -1) {
+            os.write(b,0,len);
+        }
+        os.close();
+        Program.launch(file.toURI().toURL().toString());
+    } catch (IOException e) {
+        String url = attachment.getFileName();
+        Program.launch(url);
+    }
     }
 
     /**
