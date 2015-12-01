@@ -8,8 +8,11 @@
 package org.csstudio.email.ui;
 
 import org.csstudio.email.Preferences;
+import org.csstudio.security.ui.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -46,5 +49,11 @@ implements IWorkbenchPreferencePage
         setMessage(Messages.Preferences);
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.SMTP_HOST, Messages.SMTPHost, parent));
+        addField(new IntegerFieldEditor(Preferences.SMTP_PORT, Messages.SMTPPort, parent));
+        addField(new BooleanFieldEditor(Preferences.SMTP_AUTH, Messages.SMTPAuth, parent));
+        addField(new BooleanFieldEditor(Preferences.SMTP_STARTTLS, Messages.SMTPStartTLS, parent));
+        addField(new BooleanFieldEditor(Preferences.SMTP_SSL, Messages.SMTPSSL, parent));
+        addField(new StringFieldEditor(Preferences.SMTP_USERNAME, Messages.SMTPUsername, parent));
+        addField(new PasswordFieldEditor(org.csstudio.email.Activator.ID, Preferences.SMTP_PASSWORD, Messages.SMTPPassword, parent));
     }
 }

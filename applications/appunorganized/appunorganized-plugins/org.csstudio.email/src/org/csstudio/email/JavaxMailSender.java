@@ -5,8 +5,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.mail.Address;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -14,21 +16,48 @@ import javax.mail.internet.MimeMessage;
 
 public class JavaxMailSender {
 
-    private String host, from;
+    private String host, from, username, password;
     private List<String> to, cc, cci;
     private String subject = "";
     private String body = "";
+    private int port;
+    private boolean auth;
+    private boolean startTLS;
+    private boolean ssl;
 
     public JavaxMailSender() {
         this.host = Preferences.getSMTP_Host();
+        this.port = Preferences.getSMTP_Port();
+        this.auth = Preferences.isSMTPAuthEnabled();
+        this.startTLS = Preferences.isSMTPStartTLSEnabled();
         this.from = Preferences.getSMTP_Sender();
+        this.username = Preferences.getSMTP_Username();
+        this.password = Preferences.getSMTP_Password();
+        this.ssl = Preferences.isSMTPSSL();
     }
 
     public void send() {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", "25");
-        Session session = Session.getDefaultInstance(props);
+        props.put("mail.smtp.port", String.valueOf(port));
+        props.put("mail.smtp.auth", String.valueOf(auth));
+        props.put("mail.smtp.starttls.enable", String.valueOf(startTLS));
+        if (ssl) {
+            props.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
+        }
+        Session session;
+        if (auth) {
+            session = Session.getDefaultInstance(props,new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+        } else {
+            session = Session.getDefaultInstance(props);
+        }
+        
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
@@ -65,6 +94,7 @@ public class JavaxMailSender {
             Activator.getLogger().log(Level.SEVERE,
                     "Exception during EMail sending: {0}", e.getMessage());
         }
+        System.out.println("send");
     }
 
     public boolean checkContent() {

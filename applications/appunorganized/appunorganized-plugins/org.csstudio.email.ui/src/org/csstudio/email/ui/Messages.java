@@ -26,6 +26,12 @@ public class Messages extends NLS
     public static String Preferences;
     public static String SendEmail;
     public static String SMTPHost;
+    public static String SMTPPort;
+    public static String SMTPStartTLS;
+    public static String SMTPAuth;
+    public static String SMTPUsername;
+    public static String SMTPPassword;
+    public static String SMTPSSL;
     public static String Subject;
     public static String SubjectTT;
     public static String To;

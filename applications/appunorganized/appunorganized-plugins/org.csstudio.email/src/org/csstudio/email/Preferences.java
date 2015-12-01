@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.email;
 
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -18,8 +19,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+    final public static String SMTP_USERNAME = "smtp_username";
+    final public static String SMTP_PASSWORD = "smtp_password";
     final public static String SMTP_HOST = "smtp_host";
     final public static String SMTP_SENDER = "smtp_sender";
+    final public static String SMTP_PORT = "smtp_port";
+    final public static String SMTP_AUTH = "smtp_auth";
+    final public static String SMTP_STARTTLS = "smtp_starttls";
+    final public static String SMTP_SSL = "smtp_ssl";
 
     /** @return SMTP URL */
     public static String getSMTP_Host()
@@ -31,6 +38,59 @@ public class Preferences
         return host;
     }
 
+    public static int getSMTP_Port()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getInt(Activator.ID, SMTP_PORT, 25, null);
+        return 25;
+    }
+    
+    public static boolean isSMTPSSL()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getBoolean(Activator.ID, SMTP_SSL, false, null);
+        return false;
+    }
+    
+    public static boolean isSMTPAuthEnabled()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getBoolean(Activator.ID, SMTP_AUTH, false, null);
+        return false;
+    }
+    
+    public static boolean isSMTPStartTLSEnabled()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getBoolean(Activator.ID, SMTP_STARTTLS, false, null);
+        return false;
+    }
+    
+    /** @return SMTP username */
+    public static String getSMTP_Username()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getString(Activator.ID, SMTP_USERNAME, null, null);
+        return null;
+    }
+    
+    /** @return SMTP password */
+    public static String getSMTP_Password()
+    {
+        String password = SecurePreferences.get(Activator.ID, SMTP_PASSWORD, null);
+        if (password == null) {
+            final IPreferencesService service = Platform.getPreferencesService();
+            if (service != null)
+                return service.getString(Activator.ID, SMTP_PASSWORD, null, null);
+        }
+        return password;
+    }
+    
     /** @return SMTP URL */
     public static String getSMTP_Sender()
     {
