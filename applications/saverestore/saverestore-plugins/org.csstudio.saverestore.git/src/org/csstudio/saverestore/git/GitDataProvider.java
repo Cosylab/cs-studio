@@ -483,7 +483,7 @@ public class GitDataProvider implements DataProvider {
 
     private void checkInitialised() throws DataProviderException {
         if (!initialized) {
-            throw new DataProviderException("Git Data Provider hase not been initialised.");
+            throw new DataProviderException("Git Data Provider has not been initialised.");
         }
     }
 
